@@ -5,13 +5,15 @@ import { X, Sparkles, MessageSquare } from 'lucide-react';
 interface CakeDetailModalProps {
   cake: Cake | null;
   onClose: () => void;
-  onOrderThisCake: (cake: Cake) => void;
+  onCustomizeCake: (cake: Cake) => void;
+  onProceedToDemoHandoff: () => void;
 }
 
 export const CakeDetailModal: React.FC<CakeDetailModalProps> = ({
   cake,
   onClose,
-  onOrderThisCake,
+  onCustomizeCake,
+  onProceedToDemoHandoff,
 }) => {
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -104,12 +106,12 @@ export const CakeDetailModal: React.FC<CakeDetailModalProps> = ({
             </div>
           </div>
 
-          {/* Action CTAs: Both trigger Demo Coming Soon modal */}
+          {/* Action CTAs */}
           <div className="pt-6 space-y-2.5">
             <button
               onClick={() => {
                 onClose();
-                onOrderThisCake(cake);
+                onCustomizeCake(cake);
               }}
               className="w-full py-3.5 rounded-full bg-[#FFD400] hover:bg-[#FFE14D] text-[#120E0D] font-black text-xs tracking-widest uppercase transition-all shadow-md flex items-center justify-center gap-2"
             >
@@ -120,7 +122,7 @@ export const CakeDetailModal: React.FC<CakeDetailModalProps> = ({
             <button
               onClick={() => {
                 onClose();
-                onOrderThisCake(cake);
+                onProceedToDemoHandoff();
               }}
               className="w-full py-3 rounded-full bg-white border border-[#120E0D] text-[#120E0D] font-bold text-xs tracking-wider uppercase hover:bg-[#EDE4DC] transition-all flex items-center justify-center gap-2"
             >

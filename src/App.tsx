@@ -11,29 +11,46 @@ import { OrderSection } from './components/OrderSection';
 import { LocationSection } from './components/LocationSection';
 import { FinalCtaSection } from './components/FinalCtaSection';
 import { Footer } from './components/Footer';
+import { WhatsAppOrderModal } from './components/WhatsAppOrderModal';
 import { DemoComingSoonModal } from './components/DemoComingSoonModal';
 import { CakeDetailModal } from './components/CakeDetailModal';
 import { MobileStickyBar } from './components/MobileStickyBar';
 import { Cake, CelebrationCategory } from './types';
 
 export function App() {
+  const [orderModalOpen, setOrderModalOpen] = useState(false);
+  const [orderModalPrefill, setOrderModalPrefill] = useState<any>(null);
   const [demoModalOpen, setDemoModalOpen] = useState(false);
   const [selectedCake, setSelectedCake] = useState<Cake | null>(null);
 
-  const handleOpenOrderModal = () => {
+  const handleOpenOrderModal = (initialData?: any) => {
+    setOrderModalPrefill(initialData || null);
+    setOrderModalOpen(true);
+  };
+
+  const handleProceedToDemoHandoff = () => {
+    setOrderModalOpen(false);
+    setSelectedCake(null);
     setDemoModalOpen(true);
   };
 
-  const handleSelectOccasion = (_category: CelebrationCategory) => {
-    handleOpenOrderModal();
+  const handleSelectOccasion = (category: CelebrationCategory) => {
+    handleOpenOrderModal({
+      occasion: category.name,
+      orderType: 'custom',
+    });
   };
 
   const handleSelectCake = (cake: Cake) => {
     setSelectedCake(cake);
   };
 
-  const handleQuickOrderCake = (_cake: Cake) => {
-    handleOpenOrderModal();
+  const handleQuickOrderCake = (cake: Cake) => {
+    handleOpenOrderModal({
+      flavor: cake.flavorProfile.split(',')[0],
+      cakeTitle: cake.title,
+      orderType: 'choose',
+    });
   };
 
   const handleExploreCakes = () => {
@@ -44,18 +61,18 @@ export function App() {
   };
 
   const handleCallKamat = () => {
-    handleOpenOrderModal();
+    handleOpenOrderModal({ orderType: 'direct' });
   };
 
   return (
     <div className="min-h-screen bg-[#FAF7F2] text-[#120E0D] font-sans selection:bg-[#120E0D] selection:text-[#FFD400]">
       {/* Top Navbar */}
-      <Navbar onOpenOrderModal={handleOpenOrderModal} />
+      <Navbar onOpenOrderModal={() => handleOpenOrderModal()} />
 
       {/* 1. Full-Screen Cinematic Hero with Kamat Yellow & Instagram CTA */}
       <Hero
         onExploreCakes={handleExploreCakes}
-        onOrderCake={handleOpenOrderModal}
+        onOrderCake={() => handleOpenOrderModal()}
       />
 
       {/* 2. Signature Cakes (Horizontal Editorial Gallery) */}
@@ -94,18 +111,26 @@ export function App() {
 
       {/* 10. Final CTA ("FOUND YOUR CAKE? / Let's make it yours.") */}
       <FinalCtaSection
-        onOrderCake={handleOpenOrderModal}
+        onOrderCake={() => handleOpenOrderModal()}
       />
 
       {/* Footer */}
-      <Footer onOpenCustomOrder={handleOpenOrderModal} />
+      <Footer onOpenCustomOrder={() => handleOpenOrderModal()} />
 
       {/* Mobile Persistent Floating CTA Bar (Dual Instagram & Order Action) */}
       <MobileStickyBar
-        onOrderCake={handleOpenOrderModal}
+        onOrderCake={() => handleOpenOrderModal()}
       />
 
-      {/* Premium Demo Coming Soon Modal */}
+      {/* Step 1: Interactive Order Experience Modal ("LET'S MAKE YOUR CAKE.") */}
+      <WhatsAppOrderModal
+        isOpen={orderModalOpen}
+        onClose={() => setOrderModalOpen(false)}
+        onProceedToDemoHandoff={handleProceedToDemoHandoff}
+        initialData={orderModalPrefill}
+      />
+
+      {/* Step 2: Final Demo Preview Modal ("WHATSAPP ORDERS — COMING SOON") */}
       <DemoComingSoonModal
         isOpen={demoModalOpen}
         onClose={() => setDemoModalOpen(false)}
@@ -115,7 +140,8 @@ export function App() {
       <CakeDetailModal
         cake={selectedCake}
         onClose={() => setSelectedCake(null)}
-        onOrderThisCake={handleQuickOrderCake}
+        onCustomizeCake={handleQuickOrderCake}
+        onProceedToDemoHandoff={handleProceedToDemoHandoff}
       />
     </div>
   );
