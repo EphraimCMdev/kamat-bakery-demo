@@ -11,39 +11,29 @@ import { OrderSection } from './components/OrderSection';
 import { LocationSection } from './components/LocationSection';
 import { FinalCtaSection } from './components/FinalCtaSection';
 import { Footer } from './components/Footer';
-import { WhatsAppOrderModal } from './components/WhatsAppOrderModal';
+import { DemoComingSoonModal } from './components/DemoComingSoonModal';
 import { CakeDetailModal } from './components/CakeDetailModal';
 import { MobileStickyBar } from './components/MobileStickyBar';
 import { Cake, CelebrationCategory } from './types';
-import { BRAND_CONFIG } from './data/config';
 
 export function App() {
-  const [orderModalOpen, setOrderModalOpen] = useState(false);
-  const [orderModalPrefill, setOrderModalPrefill] = useState<any>(null);
+  const [demoModalOpen, setDemoModalOpen] = useState(false);
   const [selectedCake, setSelectedCake] = useState<Cake | null>(null);
 
-  const handleOpenOrderModal = (initialData?: any) => {
-    setOrderModalPrefill(initialData || null);
-    setOrderModalOpen(true);
+  const handleOpenOrderModal = () => {
+    setDemoModalOpen(true);
   };
 
-  const handleSelectOccasion = (category: CelebrationCategory) => {
-    handleOpenOrderModal({
-      occasion: category.name,
-      orderType: 'custom',
-    });
+  const handleSelectOccasion = (_category: CelebrationCategory) => {
+    handleOpenOrderModal();
   };
 
   const handleSelectCake = (cake: Cake) => {
     setSelectedCake(cake);
   };
 
-  const handleQuickOrderCake = (cake: Cake) => {
-    handleOpenOrderModal({
-      flavor: cake.flavorProfile.split(',')[0],
-      cakeTitle: cake.title,
-      orderType: 'choose',
-    });
+  const handleQuickOrderCake = (_cake: Cake) => {
+    handleOpenOrderModal();
   };
 
   const handleExploreCakes = () => {
@@ -54,7 +44,7 @@ export function App() {
   };
 
   const handleCallKamat = () => {
-    window.location.href = `tel:${BRAND_CONFIG.phoneDisplay}`;
+    handleOpenOrderModal();
   };
 
   return (
@@ -65,7 +55,7 @@ export function App() {
       {/* 1. Full-Screen Cinematic Hero with Kamat Yellow & Instagram CTA */}
       <Hero
         onExploreCakes={handleExploreCakes}
-        onOrderCake={() => handleOpenOrderModal()}
+        onOrderCake={handleOpenOrderModal}
       />
 
       {/* 2. Signature Cakes (Horizontal Editorial Gallery) */}
@@ -104,23 +94,21 @@ export function App() {
 
       {/* 10. Final CTA ("FOUND YOUR CAKE? / Let's make it yours.") */}
       <FinalCtaSection
-        onOrderCake={() => handleOpenOrderModal()}
+        onOrderCake={handleOpenOrderModal}
       />
 
       {/* Footer */}
-      <Footer onOpenCustomOrder={() => handleOpenOrderModal()} />
+      <Footer onOpenCustomOrder={handleOpenOrderModal} />
 
       {/* Mobile Persistent Floating CTA Bar (Dual Instagram & Order Action) */}
       <MobileStickyBar
-        onOrderCake={() => handleOpenOrderModal()}
+        onOrderCake={handleOpenOrderModal}
       />
 
-      {/* Luxury WhatsApp Order Popup ("LET'S MAKE YOUR CAKE.") */}
-      <WhatsAppOrderModal
-        isOpen={orderModalOpen}
-        onClose={() => setOrderModalOpen(false)}
-        onBrowseCakes={handleExploreCakes}
-        initialData={orderModalPrefill}
+      {/* Premium Demo Coming Soon Modal */}
+      <DemoComingSoonModal
+        isOpen={demoModalOpen}
+        onClose={() => setDemoModalOpen(false)}
       />
 
       {/* Quick View Cake Detail Modal */}

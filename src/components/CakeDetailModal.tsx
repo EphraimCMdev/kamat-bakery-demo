@@ -1,8 +1,6 @@
 import React, { useEffect } from 'react';
 import { Cake } from '../types';
 import { X, Sparkles, MessageSquare } from 'lucide-react';
-import { createWhatsAppUrl } from '../data/config';
-import { KamatLogo } from './KamatLogo';
 
 interface CakeDetailModalProps {
   cake: Cake | null;
@@ -26,12 +24,6 @@ export const CakeDetailModal: React.FC<CakeDetailModalProps> = ({
   }, [cake, onClose]);
 
   if (!cake) return null;
-
-  const handleDirectWhatsApp = () => {
-    const text = `Hello Kamat Bakery Dharwad! 🎂\n\nI would like to inquire about ordering the *${cake.title}* (${cake.category} Collection).\n- Flavor notes: ${cake.flavorProfile}\n- Tiers: ${cake.tiers || 'Standard'}\n\nCould you please share availability and customization options?`;
-    const url = createWhatsAppUrl(text);
-    window.open(url, '_blank');
-  };
 
   return (
     <div
@@ -112,7 +104,7 @@ export const CakeDetailModal: React.FC<CakeDetailModalProps> = ({
             </div>
           </div>
 
-          {/* Action CTAs */}
+          {/* Action CTAs: Both trigger Demo Coming Soon modal */}
           <div className="pt-6 space-y-2.5">
             <button
               onClick={() => {
@@ -126,11 +118,14 @@ export const CakeDetailModal: React.FC<CakeDetailModalProps> = ({
             </button>
 
             <button
-              onClick={handleDirectWhatsApp}
+              onClick={() => {
+                onClose();
+                onOrderThisCake(cake);
+              }}
               className="w-full py-3 rounded-full bg-white border border-[#120E0D] text-[#120E0D] font-bold text-xs tracking-wider uppercase hover:bg-[#EDE4DC] transition-all flex items-center justify-center gap-2"
             >
-              <MessageSquare className="w-4 h-4 text-[#25D366]" />
-              <span>Continue on WhatsApp →</span>
+              <MessageSquare className="w-4 h-4 text-[#120E0D]" />
+              <span>Enquire on WhatsApp →</span>
             </button>
           </div>
 
